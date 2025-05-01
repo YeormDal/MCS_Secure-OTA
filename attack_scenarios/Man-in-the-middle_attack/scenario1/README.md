@@ -5,13 +5,14 @@
 
 ### 공격 시나리오 수행 방법
 1. 업데이트를 파일 업로드를 수행할 컴퓨터의 프록시 서버 IP 주소를 공격자의 IP 주소로 할당한다.
-   ![Step 1](path/to/image1.png)
+   ![스크린샷 2025-05-01 123313](https://github.com/user-attachments/assets/d3703274-8741-4da6-a8a5-2a7a4606fa31)
 
 2. burf 등의 툴을 이용하여 Web에서 파일 업로드를 수행할 때 서버로 전송되는 패킷을 캡처한다.
-   ![Step 2](path/to/image2.png)
+   ![스크린샷 2025-05-01 123507](https://github.com/user-attachments/assets/930ba93e-8924-4cd4-8327-fa45cc5df02c)
 
 3. 캡처된 패킷에서 암호화 되지 않은 파일 내용을 변조하여 전송한다.
-   ![Step 3](path/to/image3.png)
+   ![스크린샷 2025-05-01 123546](https://github.com/user-attachments/assets/e5ada10a-4d60-4428-8153-cecf15f13a24)
 
 4. 인증이 없는 차량은 해당 악성 파일을 설치한다.
-   ![Step 4](path/to/image4.png)
+   ![스크린샷 2025-05-01 123714](https://github.com/user-attachments/assets/894f1c63-f3e4-4071-a484-b5f54897da9c)
+
