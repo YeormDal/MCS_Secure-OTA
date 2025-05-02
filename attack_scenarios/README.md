@@ -62,8 +62,8 @@ Assume that an attacker can compromise a proxy server or DNS server and manipula
 => We will perform the activity by injecting the same CA file as the fake server to the client corresponding to the vehicle for the attack scenario
 
 ##### 2. On vehicle: Digital sign verification
-=> After injecting the vehicle to use the attacker's signature instead of the server's public key
-=> To perform the activity, the public key of attacker for the vehicle is performed.
+- After injecting the vehicle to use the attacker's signature instead of the server's public key
+- To perform the activity, the public key of attacker for the vehicle is performed.
 
 ---
 
