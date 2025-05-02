@@ -2,80 +2,92 @@
 
 ---
 ## Attack Proposol
-- 공격자는 악성 코드를 주입하여 **차량의 사고를 유발하고나 제어 권한을 얻는 것**을 목표로 함
-- 공격자는 정식 OTA를 방해하여 **차량이 보안 혹은 기능적으로 취약한 상태를 유지하는 것**을 목표로 함
+- The attacker aims to **cause a vehicle accident or gain control of it** by injecting malicious code
+- The attacker aims to **keep the vehicle in a secure or functionally vulnerable state** by interfering with the official OTA
 
   
 ## 1. Supply Chain Attack
 
-### 공격 시나리오 1: 정식 OTA 파일 업로드 웹페이지를 통해 악성 코드 업데이트 [Level 1]
+### Attack Scenario 1: Malware Update via Official OTA File Upload Webpage [Level 1]
 
-#### 공격 시나리오 전제 조건
-파일을 업로드하는 웹사이트의 URL IP 주소값(혹은 도메인)을 공격자가 획득한 것으로 가정한다.
+#### Precondition
+Assume that the attacker has obtained the IP address (or domain) of the website where the file is uploaded.
 
-#### 공격 시나리오 수행 방법
-1. 공격자는 타겟 ECU에 주입할 악성 펌웨어/소프트웨어에 해당하는 .bin 파일을 생성한다.
-2. OTA 파일을 업로드하는 정식 웹사이트를 통해 .bin 파일을 업로드한다.
-3. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+#### Attack Procedure
+1. The attacker creates a .bin file corresponding to the malicious firmware/software to be injected into the target ECU.
+2. The .bin file is uploaded through the official website that uploads OTA files.
+3. Vehicles without authentication install the malicious file.
 ---
 
-### 공격 시나리오 2: MQTT broker에 악성 코드 혹은 URL publishing [Level 1]
+### Attack Scenario 2: Publishing malicious code or URL to MQTT broker [Level 1]
 
-#### 공격 시나리오 전제 조건
-인증된 차량 해킹 하여 OEM에서 활용 중인 MQTT Broker의 IP를 획득한 것으로 가정한다.
+#### Precondition
+Assume that an authenticated vehicle has been hacked and the IP of the MQTT Broker used by the OEM has been acquired.
 
-#### 공격 시나리오 수행 방법
-1. MQTT broker에 악성 파일 혹은 펌웨어/소프트웨어 다운로드 URL을 publish 한다.
-2. Broker는 해당 정보를 topic이 일치하는 차량 전체에 방송한다.
-3. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+#### Attack Procedure
+1. Publish a malicious file or firmware/software download URL to the MQTT broker.
+2. The broker broadcasts the information to all vehicles with matching topics.
+3. Vehicles without authentication install the malicious file.
 ---
 
 ## 2. Man-in-the-middle Attack
 
-### 공격 시나리오 1: OTA 웹페이지를 캡처하여 파일 유출 및 변조
+### Attack Scenario 1: Intercept and Tamper The File Uploaded to OTA webpages
 
-#### 공격 시나리오 전제 조건
-해킹을 통해 관리자가 펌웨어를 업로드할 때 사용하는 컴퓨터(장비)의 프록시 서버를 공격자의 프록시 서버로 변경한 것으로 가정한다.
+#### Precondition of Attack Scenario
+It is assumed that the attack has successfully changed the proxy server settings of the administrator’s PC (used to upload firmware) to route traffic through the attacker's proxy server.
 
-#### 공격 시나리오 수행 방법
-1. 업데이트를 파일 업로드를 수행할 컴퓨터의 프록시 서버 IP 주소를 공격자의 IP 주소로 할당한다. 
-2. burf 등의 툴을 이용하여 Web에서 파일 업로드를 수행할 때 서버로 전송되는 패킷을 캡처한다.
-3. 캡처된 패킷에서 암호화 되지 않은 파일 내용을 변조하여 전송한다.
-4. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+#### Attack Procdure
+1. Assign the proxy server IP address of the administrator’s PC to that of the attacker.
+2. Use tools like Burp Suite to intercept the HTTP packet sent when uploading the firmware file to the OTA server.
+3. Tamper the captured file and send it to the OTA server
+4. Vehicles without authentication mechanisms will download and install the malware.
 ---
 
-### 공격 시나리오 2: 서버 IP 주소 요청의 응답을 변조하여 가짜 서버 연결 
+### Attack Scenario 2: DNS/Proxy Spoofing for Fake Server Redirection 
 
-#### 공격 시나리오 전제 조건
-해킹을 통해 프록시 서버 혹은 DNS 서버를 장악하여 IP 주소에 대한 리스폰스를 변조할 수 있다고 가정한다.
+#### Precondition
+Assume that an attacker can compromise a proxy server or DNS server and manipulate its responses to IP address queries.
 
-#### 공격 시나리오 수행 방법
-1. 공격자가 리스폰스된 IP 주소를 위조하였다고 가정하고 차량에 해당하는 직접 Client를 가짜 MQTT 브로커 혹은 OTA 서버에 연결한다.
-2. 공격자는 차량의 연결 및 업데이트 요청이 확인되면 해당 차량 OTA 포멧에 맞게 악성 코드 패킷을 생성한다.
-3. 생성된 악성 패킷을 차량으로 전송한다.
-4. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+#### Attack Procedure
+1. Assume that the attacker has forged the IP address responded from proxey or DNS,  connect the client directly to the fake MQTT broker or OTA server.
+2. After comfirm the connection and request from targe vehicle, Generate correct packet for the vehicle.
+3. Send the generated malware to the vehicle.
+4.  Vehicles without authentication mechanisms will download and install the malware.
+
+#### Additional Scenarios with secure OTA
+
+##### 1. On Server: Using HTTPS(SSL/TLS)
+=> We will use a fake CA file injectied on the vehicle.
+=> We will perform the activity by injecting the same CA file as the fake server to the client corresponding to the vehicle for the attack scenario
+
+##### 2. On vehicle: Digital sign verification
+=> After injecting the vehicle to use the attacker's signature instead of the server's public key
+=> To perform the activity, the public key of attacker for the vehicle is performed.
 
 ---
-### 공격 시나리오 3: 차량으로 전송되는 업데이트 패킷 변조
 
-#### 공격 시나리오 전제 조건
-해킹을 통해 무선 통신을 중계하는 라우터를 장악하여 IP 주소에 대한 리스폰스를 변조할 수 있다고 가정한다.
+### Attack Scenario 3: Packet Interception and Tamperation via Compromised Router
 
-#### 공격 시나리오 수행 방법
-1. 업데이트 파일을 정상 OTA 경로를 통해 업로드 한다.
-2. 업데이트 패킷을 차량으로 전송 중 라우터에 의해 강제로 공격자의 IP로 패킷이 경유하게 한것으로 가정하고 공격자 IP로 파일 전송
-3. 공격자의 IP를 업데이트 서버로 위장한 것으로 가정하고 차량에 변조된 패킷을 전송한다.
-4. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+#### Precondition
+Assume the attacker has gained control over a router that relays wireless communication, allowing interception and modification of OTA update packets.
+
+#### Attack Procedure
+1. Upload the update file via OTA.
+2. Assuming that the router sends packets to the vehicle via the attacker IP, send the file to the attacker IP.
+3. Disguise the attacker IP as the server IP and send it to the vehicle.
+4. Vehicles without authentication mechanisms will download and install the malware.
+
+---
 
 ## 3. Replay Attack
 
-### 공격 시나리오: 과거 업데이트 패킷 재사용
+### Attack Scenario 1: Reuse Previous Update Packet
 
-#### 공격 시나리오 전제 조건
-가짜 MQTT broker에 차량이 연결하도록 하여 공격자가 원하는 시점에 업데이트를 시도할 수 있다고 가정한다.
-
-#### 공격 시나리오 수행 방법
-1. 정상 업데이트에 전송되는 패킷을 다른 OTA 타겟을 통해 캡처 및 보관한다.
-2. 과거 버전에 취약점이 새로운 버전에 의해 보완된 것으로 가정하고 과거 버전의 파일의 업데이트를 가짜 MQTT broker를 통해 시도한다.
-3. 차량은 메시지 신선도 검증 미흡으로 해당 패킷 설치한다.
+#### Precondition
+Assume that the vehicle is connected to the fake MQTT broker. So the attacker can try to update malware at anytime
+#### Attack Prcedure
+1. Capture and store normal packets from the another OTA target.
+2. Assuming that vulnerabilities in the past version have been fixed by the new version, update the past version of the file through a fake MQTT broker.
+3. The vehicle installs the packet due to insufficient message freshness verification.
 ---
