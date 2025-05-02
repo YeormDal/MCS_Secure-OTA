@@ -1,48 +1,49 @@
 # 2. Man-in-the-middle Attack
 
-## 공격 시나리오 1: OTA 웹페이지를 캡처하여 파일 유출 및 변조
+## Attack Scenario 1: Intercept and Tamper The File Uploaded to OTA webpages
 
-### 공격 시나리오 전제 조건
-해킹을 통해 관리자가 펌웨어를 업로드할 때 사용하는 컴퓨터(장비)의 프록시 서버를 공격자의 프록시 서버로 변경한 것으로 가정한다.
+### Precondition of Attack Scenario
+It is assumed that the attack has successfully changed the proxy server settings of the administrator’s PC (used to upload firmware) to route traffic through the attacker's proxy server.
 
-### 공격 시나리오 수행 방법
-1. 업데이트를 파일 업로드를 수행할 컴퓨터의 프록시 서버 IP 주소를 공격자의 IP 주소로 할당한다. 
-2. Burp 등의 툴을 이용하여 Web에서 파일 업로드를 수행할 때 서버로 전송되는 패킷을 캡처한다.
-3. 캡처된 패킷에서 암호화 되지 않은 파일 내용을 변조하여 전송한다.
-4. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+### Attack Procdure
+1. Assign the proxy server IP address of the administrator’s PC to that of the attacker.
+2. Use tools like Burp Suite to intercept the HTTP packet sent when uploading the firmware file to the OTA server.
+3. Tamper the captured file and send it to the OTA server
+4. Vehicles without authentication mechanisms will download and install the malware.
 ---
 
-## 공격 시나리오 2: 서버 IP 주소 요청의 응답을 변조하여 가짜 서버 연결 
+## Attack Scenario 2: DNS/Proxy Spoofing for Fake Server Redirection 
 
-### 공격 시나리오 전제 조건
-해킹을 통해 프록시 서버 혹은 DNS 서버를 장악하여 IP 주소에 대한 리스폰스를 변조할 수 있다고 가정한다.
+### Precondition
+Assume that an attacker can compromise a proxy server or DNS server and manipulate its responses to IP address queries.
 
-### 공격 시나리오 수행 방법
-1. 공격자가  응답된 IP 주소를 위조하였다고 가정하고 차량에 해당하는 직접 Client를 가짜 MQTT 브로커 혹은 OTA 서버에 연결한다.
-2. 공격자는 차량의 연결 및 업데이트 요청이 확인되면 해당 차량 OTA 포멧에 맞게 악성 코드 패킷을 생성한다.
-3. 생성된 악성 패킷을 차량으로 전송한다.
-4. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+### Attack Procedure
+1. Assume that the attacker has forged the IP address responded from proxey or DNS,  connect the client directly to the fake MQTT broker or OTA server.
+2. After comfirm the connection and request from targe vehicle, Generate correct packet for the vehicle.
+3. Send the generated malware to the vehicle.
+4.  Vehicles without authentication mechanisms will download and install the malware.
 
-### 보안 요소 추가 시나리오
+### Additional Scenarios with secure OTA
 
-#### 1. 서버 측: HTTPS(SSL/TLS) 통신
-=> 차량을 해킹하여 가짜 CA 파일을 주입한 후 해당 공격을 수행한다.
-=> 공격 시나리오 수행을 위해 차량에 해당하는 Client에 가짜 서버와 동일한 CA 파일을 추가하여 시나리오를 수행한다.
+#### 1. On Server: Using HTTPS(SSL/TLS)
+=> We will use a fake CA file injectied on the vehicle.
+=> We will perform the activity by injecting the same CA file as the fake server to the client corresponding to the vehicle for the attack scenario
 
-#### 2. 차량 측: 전자서명 검증
-=> 차량을 해킹하여 서버의 공개키가 아닌 공격자의 공개키를 사용하도록 변경한 후 해당 공격을 수행한다.
-=> 공격 시나리오 수행을 위해 차량에 해당하는 Client에 공격자의 공개키를 주입하여 시나리오를 수행한다. (이때, 서버의 공개키와 동일한 이름으로 주입하여 대체하도록 한다.)
+#### 2. On vehicle: Digital sign verification
+=> After injecting the vehicle to use the attacker's signature instead of the server's public key
+=> To perform the activity, the public key of attacker for the vehicle is performed.
 
 ---
 
-## 공격 시나리오 3: 차량으로 전송되는 업데이트 패킷 변조
+## Attack Scenario 3: Packet Interception and Tamperation via Compromised Router
 
-### 공격 시나리오 전제 조건
-해킹을 통해 무선 통신을 중계하는 라우터를 장악하여 IP 주소에 대한 리스폰스를 변조할 수 있다고 가정한다.
+### Precondition
+Assume the attacker has gained control over a router that relays wireless communication, allowing interception and modification of OTA update packets.
 
-### 공격 시나리오 수행 방법
-1. 업데이트 파일을 정상 OTA 경로를 통해 업로드 한다.
-2. 업데이트 패킷을 차량으로 전송 중 라우터에 의해 강제로 공격자의 IP로 패킷이 경유하게 한것으로 가정하고 공격자 IP로 파일 전송
-3. 공격자의 IP를 업데이트 서버로 위장한 것으로 가정하고 차량에 변조된 패킷을 전송한다.
-4. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+### Attack Procedure
+1. Upload the update file via OTA.
+2. Assuming that the router sends packets to the vehicle via the attacker IP, send the file to the attacker IP.
+3. Disguise the attacker IP as the server IP and send it to the vehicle.
+4. Vehicles without authentication mechanisms will download and install the malware.
+
 ---
