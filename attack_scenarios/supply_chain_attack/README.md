@@ -1,23 +1,23 @@
 # 1. Supply Chain Attack
 
-## 공격 시나리오 1: 정식 OTA 파일 업로드 웹페이지를 통해 악성 코드 업데이트 [Level 1]
+## Attack Scenario 1: Malware Update via Official OTA File Upload Webpage [Level 1]
 
-### 공격 시나리오 전제 조건
-파일을 업로드하는 웹사이트의 URL IP 주소값(혹은 도메인)을 공격자가 획득한 것으로 가정한다.
+### Precondition
+Assume that the attacker has obtained the IP address (or domain) of the website where the file is uploaded.
 
-### 공격 시나리오 수행 방법
-1. 공격자는 타겟 ECU에 주입할 악성 펌웨어/소프트웨어에 해당하는 .bin 파일을 생성한다.
-2. OTA 파일을 업로드하는 정식 웹사이트를 통해 .bin 파일을 업로드한다.
-3. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+### Attack Procedure
+1. The attacker creates a .bin file corresponding to the malicious firmware/software to be injected into the target ECU.
+2. The .bin file is uploaded through the official website that uploads OTA files.
+3. Vehicles without authentication install the malicious file.
 ---
 
-## 공격 시나리오 2: MQTT broker에 악성 코드 혹은 URL publishing [Level 1]
+## Attack Scenario 2: Publishing malicious code or URL to MQTT broker [Level 1]
 
-### 공격 시나리오 전제 조건
-인증된 차량 해킹 하여 OEM에서 활용 중인 MQTT Broker의 IP를 획득한 것으로 가정한다.
+### Precondition
+Assume that an authenticated vehicle has been hacked and the IP of the MQTT Broker used by the OEM has been acquired.
 
-### 공격 시나리오 수행 방법
-1. MQTT broker에 악성 파일 혹은 펌웨어/소프트웨어 다운로드 URL을 publish 한다.
-2. Broker는 해당 정보를 topic이 일치하는 차량 전체에 방송한다.
-3. 인증이 없는 차량은 해당 악성 파일을 설치한다.
+### Attack Procedure
+1. Publish a malicious file or firmware/software download URL to the MQTT broker.
+2. The broker broadcasts the information to all vehicles with matching topics.
+3. Vehicles without authentication install the malicious file.
 ---
