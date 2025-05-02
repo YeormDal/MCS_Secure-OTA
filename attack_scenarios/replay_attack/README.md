@@ -1,12 +1,11 @@
 # 3. Replay Attack
 
-## 공격 시나리오: 과거 업데이트 패킷 재사용
+## Attack Scenario 1: Reuse Previous Update Packet
 
-### 공격 시나리오 전제 조건
-가짜 MQTT broker에 차량이 연결하도록 하여 공격자가 원하는 시점에 업데이트를 시도할 수 있다고 가정한다.
-
-### 공격 시나리오 수행 방법
-1. 정상 업데이트에 전송되는 패킷을 다른 OTA 타겟을 통해 캡처 및 보관한다.
-2. 과거 버전에 취약점이 새로운 버전에 의해 보완된 것으로 가정하고 과거 버전의 파일의 업데이트를 가짜 MQTT broker를 통해 시도한다.
-3. 차량은 메시지 신선도 검증 미흡으로 해당 패킷 설치한다.
+### Precondition
+Assume that the vehicle is connected to the fake MQTT broker. So the attacker can try to update malware at anytime
+### Attack Prcedure
+1. Capture and store normal packets from the another OTA target.
+2. Assuming that vulnerabilities in the past version have been fixed by the new version, update the past version of the file through a fake MQTT broker.
+3. The vehicle installs the packet due to insufficient message freshness verification.
 ---
